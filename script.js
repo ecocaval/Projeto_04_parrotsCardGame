@@ -65,8 +65,6 @@ function extractCardsToMatch(cards, class_to_match) {
             cardsToTest.push(cards[card]);
         }
     }    
-    
-    console.log(cardsToTest);
     return cardsToTest;
 }
 
