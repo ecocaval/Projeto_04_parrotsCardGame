@@ -13,8 +13,8 @@ function testCard(card) {
     // regex user for extracting the gif name from the image file
     const extractGifRegex = /images\/(.*).gif/
     
-    let cardBack = card.childNodes[1];
-    let cardFront = card.childNodes[3];
+    let cardBack = card.childNodes[3];
+    let cardFront = card.childNodes[1];
 
     // variable containing the classe name of the card clicked
     const cardClass = extractGifRegex.exec(cardFront.childNodes[1].src)[1];
@@ -25,37 +25,49 @@ function testCard(card) {
 }
 
 function flipCard(cardBack, cardFront) {
-    cardFront.classList.toggle('hidden');
-    cardBack.classList.toggle('hidden');
+    cardFront.classList.toggle('rotate');
+    cardBack.classList.toggle('rotate');
 }
 
 function testForMatch(class_to_match) {
 
-    const extractGifRegex = /images\/(.*).gif/
-
     const cardFront = Array.from(document.querySelectorAll('.cardFront'));
 
-    const cardsToTest = [];
+    const cardsToTest = extractCardsToMatch(cardFront, class_to_match);
 
-    for(let card in cardFront) {
-        const cardClass = extractGifRegex.exec(cardFront[card].childNodes[1].src)[1];
-        if(cardClass === class_to_match) {
-            cardsToTest.push(cardFront[card]);
-        }
-    }    
-    
-    let cardsHidden = 0;
-
-    for(let card in cardsToTest){
-        if(cardsToTest[card].classList.contains('hidden')) {
-            cardsHidden++
-        }
-    }
-
-    if(cardsHidden === 0) {
+    if(numberOfCardsHidden(cardsToTest) === 0) {
         return true;
     }
     return false;
+}
+
+function numberOfCardsHidden(cardsToTest){
+    let cardsHidden = 0;
+
+    for(let card in cardsToTest){
+        if(cardsToTest[card].classList.contains('rotate')) {
+            cardsHidden++
+        }
+    }
+    return cardsHidden;
+}
+
+function extractCardsToMatch(cards, class_to_match) {
+
+    // looks for any string between 'images/' and '.gif'
+    const extractGifRegex = /images\/(.*).gif/;
+
+    let cardsToTest = [];    
+
+    for(let card in cards) {
+        const cardClass = extractGifRegex.exec(cards[card].childNodes[1].src)[1];
+        if(cardClass === class_to_match) {
+            cardsToTest.push(cards[card]);
+        }
+    }    
+    
+    console.log(cardsToTest);
+    return cardsToTest;
 }
 
 function askCardQuantity() {
@@ -78,12 +90,12 @@ function createGameCards(cardQuantity) {
 
     for(let contador = 0; contador < cardQuantity; contador++) {
         cardSection.innerHTML += `
-        <div onclick="testCard(this)">
+        <div class="card" onclick="testCard(this)">
+            <div class="cardFront rotate">
+                <img src="images/${cardClasses[contador]}.gif">
+            </div>
             <div class="cardBack">
                 <img src="images/back.png">
-            </div>
-            <div class="cardFront hidden">
-                <img src="images/${cardClasses[contador]}.gif">
             </div>
         </div>
         `;
