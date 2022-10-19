@@ -17,24 +17,22 @@ function testCard(card) {
         childNodes[1] -> selects div.cardFront
     */
     let clickedCardBack = card.childNodes[3];
-    let clickedCardFront = card.childNodes[1];
-
-    if(clickedCardBack.classList.contains('rotate')) {
-        return;
-    }
-
+    let clickedCardFront = card.childNodes[1];  
+    
     // regex user for extracting the gif name from the image file
     const extractGifRegex = /images\/(.*).gif/;
-
+    
     // variable containing the classe name of the card clicked
     const cardClass = extractGifRegex.exec(clickedCardFront.childNodes[1].src)[1];
     
     // extracts an array containing only the 2 cards with the class being tested
     const cardsToTest = extractCardsToMatch(cardFront, cardClass);    
+
+    if(clickedCardBack.classList.contains('rotate') && !cardIsNotMatched(getFlippedCards(cardFront), clickedCardFront)) {
+        return;
+    }
     
     flipCard(clickedCardBack, clickedCardFront);
-
-    const cardsNotHidden = cardFront.length - numberOfCardsHidden(cardFront);
 
     if(testForMatch(cardsToTest)) {
         console.log('match!');
@@ -44,6 +42,17 @@ function testCard(card) {
         flipBothCardsDisplayed(cardFront, cardBack);
         }, 1000);
     }
+}
+
+function getFlippedCards(allCardsFront){
+    const cardsFlipedFront = []
+    
+    for(let cardCounter in allCardsFront) {
+        if(!allCardsFront[cardCounter].classList.contains('rotate')) {
+            cardsFlipedFront.push(allCardsFront[cardCounter]);
+        }
+    }    
+    return cardsFlipedFront;
 }
 
 function flipBothCardsDisplayed(allCardsFront, allCardsBack) {
@@ -60,10 +69,35 @@ function flipBothCardsDisplayed(allCardsFront, allCardsBack) {
     // console.log(cardsFlipedFront);
 
     for(let cardCounter in cardsFlipedFront) {
-        if(cardIsNotMatched(cardsFlipedFront, cardsFlipedFront[cardCounter])) {
+        if(cardIsNotMatched(cardsFlipedFront, cardsFlipedFront[cardCounter]) && !cardIsAlone(cardsFlipedFront, cardsFlipedFront[cardCounter])) {
             flipCard(cardsFlipedFront[cardCounter], cardsFlipedBack[cardCounter]);
         }
     }  
+}
+
+function cardIsAlone(cardsFliped) {
+
+    // regex user for extracting the gif name from the image file
+    const extractGifRegex = /images\/(.*).gif/;
+
+    let quantityOfAloneCardsFlipped = cardsFliped.length;    
+
+   // variable containing the classe name of the card clicked
+   const cardsToAnalyzeClasses = [];
+
+   for(let cards in cardsFliped) {
+       cardsToAnalyzeClasses.push(extractGifRegex.exec(cardsFliped[cards].childNodes[1].src)[1]);
+   }
+
+   for(let i = 0; i < cardsToAnalyzeClasses.length; i++) {
+       for(let j = i + 1; j < cardsToAnalyzeClasses.length; j++) {
+           if(cardsToAnalyzeClasses[i] === cardsToAnalyzeClasses[j]) {
+            quantityOfAloneCardsFlipped -= 2;
+           }
+       }
+   }
+
+   return (quantityOfAloneCardsFlipped === 1);
 }
 
 function cardIsNotMatched(cardsFliped, cardToAnalyse) {
@@ -225,7 +259,6 @@ function shuffleCards(card_classes_to_shuffle) {
     
     return shuffledCardsClasses;
 }
-
 
 // concatenates the array with it self, doubling the array total size
 function doubleTheArray(arrayToDouble) {
