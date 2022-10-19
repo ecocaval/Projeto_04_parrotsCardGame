@@ -8,8 +8,10 @@ askCardQuantity();
 
 // called everytime the user clicks card
 function testCard(card) {
-    // regex user for extracting the gif name from the image file
-    const extractGifRegex = /images\/(.*).gif/
+    
+    const cardFront = Array.from(document.querySelectorAll('.cardFront'));
+    const cardBack = Array.from(document.querySelectorAll('.cardBack'));
+
     /*
         childNodes[3] -> selects div.cardBack
         childNodes[1] -> selects div.cardFront
@@ -17,14 +19,79 @@ function testCard(card) {
     let clickedCardBack = card.childNodes[3];
     let clickedCardFront = card.childNodes[1];
 
+    if(clickedCardBack.classList.contains('rotate')) {
+        return;
+    }
+
+    // regex user for extracting the gif name from the image file
+    const extractGifRegex = /images\/(.*).gif/;
+
     // variable containing the classe name of the card clicked
     const cardClass = extractGifRegex.exec(clickedCardFront.childNodes[1].src)[1];
-
+    
+    // extracts an array containing only the 2 cards with the class being tested
+    const cardsToTest = extractCardsToMatch(cardFront, cardClass);    
+    
     flipCard(clickedCardBack, clickedCardFront);
 
-    if(testForMatch(cardClass)) {
-        //
-    } 
+    const cardsNotHidden = cardFront.length - numberOfCardsHidden(cardFront);
+
+    if(testForMatch(cardsToTest)) {
+        console.log('match!');
+    } else {
+        setTimeout(function() {
+        //your code to be executed after 1 second
+        flipBothCardsDisplayed(cardFront, cardBack);
+        }, 1000);
+    }
+}
+
+function flipBothCardsDisplayed(allCardsFront, allCardsBack) {
+    const cardsFlipedFront = []
+    const cardsFlipedBack = []
+    
+    for(let cardCounter in allCardsFront) {
+        if(!allCardsFront[cardCounter].classList.contains('rotate')) {
+            cardsFlipedFront.push(allCardsFront[cardCounter]);
+            cardsFlipedBack.push(allCardsBack[cardCounter]);
+        }
+    }    
+
+    // console.log(cardsFlipedFront);
+
+    for(let cardCounter in cardsFlipedFront) {
+        if(cardIsNotMatched(cardsFlipedFront, cardsFlipedFront[cardCounter])) {
+            flipCard(cardsFlipedFront[cardCounter], cardsFlipedBack[cardCounter]);
+        }
+    }  
+}
+
+function cardIsNotMatched(cardsFliped, cardToAnalyse) {
+
+     // regex user for extracting the gif name from the image file
+     const extractGifRegex = /images\/(.*).gif/;
+
+    // variable containing the classe name of the card clicked
+    const cardsToAnalyzeClasses = [];
+    const classesWithBothCardsFlipped = [];
+    const cardTestedClass = extractGifRegex.exec(cardToAnalyse.childNodes[1].src)[1];
+
+    for(let cards in cardsFliped) {
+        cardsToAnalyzeClasses.push(extractGifRegex.exec(cardsFliped[cards].childNodes[1].src)[1]);
+    }
+
+    for(let i = 0; i < cardsToAnalyzeClasses.length; i++) {
+        for(let j = i + 1; j < cardsToAnalyzeClasses.length; j++) {
+            if(cardsToAnalyzeClasses[i] === cardsToAnalyzeClasses[j]) {
+                classesWithBothCardsFlipped.push(cardsToAnalyzeClasses[i]);
+            }
+        }
+    }
+
+    if(classesWithBothCardsFlipped.includes(cardTestedClass)) {
+        return false;
+    }
+    return true;
 }
 
 // flips the card switching the '.rotate' class from both card "sub divs" (cardBack and cardFront)
@@ -34,13 +101,7 @@ function flipCard(cardBack, cardFront) {
 }
 
 // checks if there was a match for the card selected
-function testForMatch(class_to_match) {
-
-    const cardFront = Array.from(document.querySelectorAll('.cardFront'));
-
-    // extracts an array containing only the 2 cards with the class being tested
-    const cardsToTest = extractCardsToMatch(cardFront, class_to_match);
-
+function testForMatch(cardsToTest) {
     if(numberOfCardsHidden(cardsToTest) === 0) {
         return true;
     }
