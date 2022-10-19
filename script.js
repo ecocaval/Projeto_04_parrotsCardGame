@@ -40,7 +40,7 @@ function testCard(card) {
         setTimeout(function() {
         //your code to be executed after 1 second
         flipBothCardsDisplayed(cardFront, cardBack);
-        }, 1000);
+        }, 1300);
     }
 }
 
