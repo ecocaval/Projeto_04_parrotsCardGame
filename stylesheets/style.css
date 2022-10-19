@@ -1,15 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Righteous&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-*{
-    font-family: Roboto;
+:root {
+    /* Cards variables */
+    --cardBackgroundColor: #A7E9AF;
+    --cardBorderColor: #99CEA8;
+    --cardWidth: 117px;
+    --cardHeight: 146px;
+    --cardImgWidth: 100px;
+    --cardImgHeight: 100px;
 }
-
 
 body {
     background-color: #EEF9BF;  
 }
 
 header {
+    font-family: Roboto;
     text-align: center;
     font-weight: 700;
     color: #75B79E;
@@ -18,36 +24,38 @@ header {
 }
 
 main {
-    width: 80%;
+    width: 85%;
     margin: 0px auto;
     
 }
 
 .cardSection {
+    width: 100%;
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .card {
     position: relative;
-    margin: 0px 70px;
+    margin: 20px 30px;   
+    width: var(--cardWidth);
+    height: var(--cardHeight);
 }
-
+    
 .cardBack, .cardFront {
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #A7E9AF;
-    border: 1px solid #99CEA8;
-    border-radius: 10px;
-    width: 117px;
-    height: 146px;
-    margin: 0px 20px 30px 20px;
-    position: absolute;
+    background-color: var(--cardBackgroundColor);
+    width: var(--cardWidth);
+    height: var(--cardHeight);
     backface-visibility: hidden;
     transition: all .5s;
     transform-style: preserve-3d;
+    border: 1px solid var(--cardBorderColor);
+    border-radius: 10px;
 }
 
 .cardBack img, .cardFront img {
@@ -56,7 +64,7 @@ main {
 }
 
 .rotate {
-    transform: rotateY(-180deg);
+    transform: rotateY(180deg);
 }
 
 @media(max-width: 500px) {
