@@ -2,9 +2,6 @@
  * @brief Parrot Game - 17/10/22
 */ 
 
-// num.sort((a,b) => {
-//     return 0.5 - Math.random();
-// })
 
 // firts function of the program
 askCardQuantity();
@@ -84,6 +81,8 @@ function createGameCards(cardQuantity) {
 
     let cardClasses = ['bobrossparrot', 'explodyparrot', 'fiestaparrot', 'metalparrot', 'revertitparrot', 'tripletsparrot', 'unicornparrot'];    
 
+    cardClasses = shuffleCards(cardClasses);
+
     while(cardClasses.length > cardQuantity/2) {
         cardClasses.pop();
     }
@@ -103,6 +102,29 @@ function createGameCards(cardQuantity) {
         `;
     }
 }
+
+function shuffleCards(card_classes_to_shuffle) {
+    const originalCardsClasses = card_classes_to_shuffle.slice()
+    const originalCardsClassesIndexes = [];
+
+    let shuffledCardsClasses = [];
+    let shuffledCardsClassesIndexes = [];
+
+    for(let counter in originalCardsClasses){
+        originalCardsClassesIndexes.push(counter);
+    }
+
+    shuffledCardsClassesIndexes = originalCardsClassesIndexes.sort((a,b) => {
+        return 0.5 - Math.random();
+    })
+
+    for(let counter in originalCardsClasses){
+        shuffledCardsClasses.push(originalCardsClasses[shuffledCardsClassesIndexes[counter]])
+    }    
+    
+    return shuffledCardsClasses;
+}
+
 
 function doubleTheArray(arrayToDouble) {
     arrayToDouble = arrayToDouble.concat(arrayToDouble);
