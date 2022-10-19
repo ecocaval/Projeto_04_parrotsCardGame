@@ -84,6 +84,10 @@ function createGameCards(cardQuantity) {
 
     let cardClasses = ['bobrossparrot', 'explodyparrot', 'fiestaparrot', 'metalparrot', 'revertitparrot', 'tripletsparrot', 'unicornparrot'];    
 
+    while(cardClasses.length > cardQuantity/2) {
+        cardClasses.pop();
+    }
+
     cardClasses = doubleTheArray(cardClasses);
 
     for(let contador = 0; contador < cardQuantity; contador++) {
