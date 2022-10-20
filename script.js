@@ -130,8 +130,12 @@ function testCard(card) {
         return;
     }
     
-    // flips the card clicked
-    flipCard(clickedCardBack, clickedCardFront);
+    if(noCardsBeingTested(cardsFront, cardsBack)) {
+        // flips the card clicked
+        flipCard(clickedCardBack, clickedCardFront);
+    } else {
+        return;
+    }
 
     // checks if the card clicked is matched
     if(testForMatch(cardsToMatch)) {
@@ -215,6 +219,29 @@ function getFlippedCards(allCardsFrontDiv, allCardsBackDiv){
         }
     }    
     return [cardsFlipedFrontDiv, cardsFlipedBackDiv];
+}
+
+function noCardsBeingTested(allCardsFrontDiv, allCardsBackDiv) {
+
+    const cardsFlipedFrontDiv = getFlippedCards(allCardsFrontDiv, allCardsBackDiv)[0];
+    const cardsToAnalyzeClasses = [];
+
+    let numberOfCardsFlipped = cardsFlipedFrontDiv.length;
+
+    console.log(numberOfCardsFlipped);
+
+    for(let cards in cardsFlipedFrontDiv) {
+        cardsToAnalyzeClasses.push(extractNameFromGifFile(cardsFlipedFrontDiv[cards]));
+    }
+
+    for(let currentCard = 0; currentCard < cardsToAnalyzeClasses.length; currentCard++) {
+        for(let nextCard = currentCard + 1; nextCard < cardsToAnalyzeClasses.length; nextCard++) {
+            if(cardsToAnalyzeClasses[currentCard] === cardsToAnalyzeClasses[nextCard]) {
+                numberOfCardsFlipped -= 2;
+            }
+        }
+    }
+    return (numberOfCardsFlipped < 2);
 }
 
 // flips the card switching the '.rotate' class from both card "sub divs" (cardBack and cardFront)
