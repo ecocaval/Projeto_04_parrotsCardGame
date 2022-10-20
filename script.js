@@ -145,7 +145,7 @@ function testCard(card) {
     if(gameIsOver(cardsFront)) {
         setTimeout(function() {
             alert(`Você ganhou em ${numberOfPlays} jogadas!`);   
-            restartMatch();    
+            restartMatchAtEnd();    
         }, 500);
     }
 }
@@ -307,9 +307,9 @@ function gameIsOver(cardsFront) {
     return false;
 }
 
-function restartMatch() {
+function restartMatchAtEnd() {
 
-    let userAnswer = prompt('Você gostaria de reiniciar o jogo?')
+    let userAnswer = prompt('Você gostaria de reiniciar o jogo? (sim/não)')
 
     // gets the user answer and dinsconsiders UpperCases and Accents 
     userAnswer = userAnswer.toLowerCase();
@@ -319,9 +319,11 @@ function restartMatch() {
         deleteCards();
         askCardQuantity();
     } else if (userAnswer === 'nao') {
-        alert('Tudo bem, obrigado por jogar!');
+        alert("Tudo bem! Caso mude de ideia, aperte botão 'RESTART GAME' !");
+        displayRestartButton();
     }  else {
-        restartMatch();
+        // keeps asking until the userAnswer respects the answer rules
+        restartMatchAtEnd();
     }
 }
 
@@ -329,4 +331,22 @@ function restartMatch() {
 function deleteCards() {
     const cardSection = document.querySelector('.cardSection');
     cardSection.innerHTML = null;
+}
+
+function displayRestartButton() {
+    const main_section = document.querySelector('main');
+    main_section.innerHTML += `
+        <div class="restartButton" onclick="restartMatchAtButton()">Restart Game</div>
+    `;
+}
+
+function restartMatchAtButton() {
+    deleteCards();
+    deleteRestartButton()
+    askCardQuantity();
+}
+
+function deleteRestartButton() {
+    const restartButton = document.querySelector('.restartButton');
+    restartButton.remove();
 }
