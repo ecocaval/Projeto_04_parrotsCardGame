@@ -6,6 +6,8 @@
 
     /* Cards variables */
     --cardBackgroundColor: #A7E9AF;
+    --cardMatchedBackgroundColor: #f294e58d;
+    --cardMatchedBorderColor: #ec53658d;
     --cardBorderColor: #99CEA8;
     --cardWidth: 117px;
     --cardHeight: 146px;
@@ -45,10 +47,14 @@ main {
     width: var(--cardWidth);
     height: var(--cardHeight);
 }
+
+.card:hover{
+    cursor: pointer;
+}
     
 .cardBack, .cardFront {
     position: absolute;
-    display: flex;
+    display: flex;  
     justify-content: center;
     align-items: center;
     width: var(--cardWidth);
@@ -68,6 +74,11 @@ main {
 
 .rotate {
     transform: rotateY(180deg);
+}
+
+.cardMatched {
+    background-color: var(--cardMatchedBackgroundColor);
+    border: 1px solid var(--cardMatchedBorderColor);
 }
 
 @media(max-width: 500px) {

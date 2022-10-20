@@ -3,47 +3,87 @@
  *        Driven Turma 9 - Third week of full-stack course
 */ 
 
+// total number of plays, will be incremented and displayed at the game's end
+let numberOfPlays = 0;
+
 // asks the quantity of cards to be displayed, so we can start the game
 askCardQuantity();
+
+function extractNameFromGifFile(cardFrontDiv) {
+
+    // regex user for extracting the gif name from the image file
+    const extractGifRegex = /images\/(.*).gif/;
+
+    // applies the regex above in the card front div received
+    const gifFileName = extractGifRegex.exec(cardFrontDiv.childNodes[1].src)[1];
+
+    return gifFileName;
+}
 
 // called everytime the user clicks card
 function testCard(card) {
     
-    const cardFront = Array.from(document.querySelectorAll('.cardFront'));
-    const cardBack = Array.from(document.querySelectorAll('.cardBack'));
+    /* 
+        In this game every card has a div for it's front part and a div for 
+        it's back part, we must select both to create our flipping cards logic 
+    */
+    const cardsFront = Array.from(document.querySelectorAll('.cardFront'));
+    const cardsBack = Array.from(document.querySelectorAll('.cardBack'));
 
     /*
         childNodes[3] -> selects div.cardBack
         childNodes[1] -> selects div.cardFront
     */
     let clickedCardBack = card.childNodes[3];
-    let clickedCardFront = card.childNodes[1];  
-    
-    // regex user for extracting the gif name from the image file
-    const extractGifRegex = /images\/(.*).gif/;
+    let clickedCardFront = card.childNodes[1];          
     
     // variable containing the classe name of the card clicked
-    const cardClass = extractGifRegex.exec(clickedCardFront.childNodes[1].src)[1];
+    const cardClass = extractNameFromGifFile(clickedCardFront);
     
     // extracts an array containing only the 2 cards with the class being tested
-    const cardsToTest = extractCardsToMatch(cardFront, cardClass);    
+    const cardsToMatch = extractCardsToMatch(cardsFront, cardClass);    
 
-    if(clickedCardBack.classList.contains('rotate') && !cardIsNotMatched(getFlippedCards(cardFront), clickedCardFront)) {
+    // the game does not flip a matched card
+    if(clickedCardBack.classList.contains('rotate') && !cardIsNotMatched(getFlippedCards(cardsFront), clickedCardFront)) {
         return;
     }
     
+    // flips the card clicked
     flipCard(clickedCardBack, clickedCardFront);
 
-    if(testForMatch(cardsToTest)) {
-        console.log('match!');
+    // checks if the card clicked is matched
+    if(testForMatch(cardsToMatch)) {
+        numberOfPlays++;        
+        changeMatchedCardsColor(cardsFront);
     } else {
+        flipBothCardsDisplayed(cardsFront, cardsBack);
+    }
+
+    if(GameIsOver(cardsFront)) {
         setTimeout(function() {
-        //your code to be executed after 1 second
-        flipBothCardsDisplayed(cardFront, cardBack);
-        }, 1300);
+            alert(`Você ganhou em ${numberOfPlays} jogadas!`);       
+        }, 500);
     }
 }
 
+// adds pink background color to card when it's match is found
+function changeMatchedCardsColor(cardsFrontDiv) {
+    for(let cardCounter in cardsFrontDiv) {
+        if(!cardsFrontDiv[cardCounter].classList.contains('rotate')) {
+            cardsFrontDiv[cardCounter].classList.add('cardMatched')
+        }
+    }
+}
+
+// checks if all cards were flipped
+function GameIsOver(cardsFront) {
+    if(numberOfCardsHidden(cardsFront) === 0) {
+        return true;
+    }
+    return false;
+}
+
+// gets all the current flipped cards in game
 function getFlippedCards(allCardsFront){
     const cardsFlipedFront = []
     
@@ -58,6 +98,8 @@ function getFlippedCards(allCardsFront){
 function flipBothCardsDisplayed(allCardsFront, allCardsBack) {
     const cardsFlipedFront = []
     const cardsFlipedBack = []
+
+    let quantityOfCardsFliped = 0;
     
     for(let cardCounter in allCardsFront) {
         if(!allCardsFront[cardCounter].classList.contains('rotate')) {
@@ -68,11 +110,20 @@ function flipBothCardsDisplayed(allCardsFront, allCardsBack) {
 
     // console.log(cardsFlipedFront);
 
-    for(let cardCounter in cardsFlipedFront) {
-        if(cardIsNotMatched(cardsFlipedFront, cardsFlipedFront[cardCounter]) && !cardIsAlone(cardsFlipedFront, cardsFlipedFront[cardCounter])) {
-            flipCard(cardsFlipedFront[cardCounter], cardsFlipedBack[cardCounter]);
-        }
-    }  
+    setTimeout(function() {
+        for(let cardCounter in cardsFlipedFront) {
+            if(cardIsNotMatched(cardsFlipedFront, cardsFlipedFront[cardCounter]) && !cardIsAlone(cardsFlipedFront, cardsFlipedFront[cardCounter])) {
+                flipCard(cardsFlipedFront[cardCounter], cardsFlipedBack[cardCounter]);
+                quantityOfCardsFliped++;
+            }
+        }  
+    }, 600);
+
+
+    // checks if the play was completed, so we can increment 'numberOfPlays'
+    if(quantityOfCardsFliped >= 2) {
+        numberOfPlays++;
+    }
 }
 
 function cardIsAlone(cardsFliped) {
@@ -265,4 +316,3 @@ function doubleTheArray(arrayToDouble) {
     arrayToDouble = arrayToDouble.concat(arrayToDouble);
     return arrayToDouble;
 }
-
