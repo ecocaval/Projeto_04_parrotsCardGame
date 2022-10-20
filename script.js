@@ -144,7 +144,8 @@ function testCard(card) {
     // checks if the game is over, if it is displays the 'numberOfPlays' played
     if(gameIsOver(cardsFront)) {
         setTimeout(function() {
-            alert(`Você ganhou em ${numberOfPlays} jogadas!`);       
+            alert(`Você ganhou em ${numberOfPlays} jogadas!`);   
+            restartMatch();    
         }, 500);
     }
 }
@@ -270,7 +271,7 @@ function flipBothCardsDisplayed(allCardsFront, allCardsBack) {
         if(quantityOfCardsFliped >= 2) {
             numberOfPlays++;
         }
-    }, 600);
+    }, 1000); // 1s of delay
 }
 
 // checks if just 1 card was selected, so we can mantain it being displayed
@@ -304,4 +305,28 @@ function gameIsOver(cardsFront) {
         return true;
     }
     return false;
+}
+
+function restartMatch() {
+
+    let userAnswer = prompt('Você gostaria de reiniciar o jogo?')
+
+    // gets the user answer and dinsconsiders UpperCases and Accents 
+    userAnswer = userAnswer.toLowerCase();
+    userAnswer = userAnswer.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    if(userAnswer === 'sim') {
+        deleteCards();
+        askCardQuantity();
+    } else if (userAnswer === 'nao') {
+        alert('Tudo bem, obrigado por jogar!');
+    }  else {
+        restartMatch();
+    }
+}
+
+// deletes the previous cards displayed at screen
+function deleteCards() {
+    const cardSection = document.querySelector('.cardSection');
+    cardSection.innerHTML = null;
 }
