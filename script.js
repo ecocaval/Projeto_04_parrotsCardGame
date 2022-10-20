@@ -308,6 +308,7 @@ function gameIsOver(cardsFront) {
 }
 
 function restartMatchAtEnd() {
+    numberOfPlays = 0;
 
     let userAnswer = prompt('Você gostaria de reiniciar o jogo? (sim/não)')
 
