@@ -44,7 +44,7 @@ function testCard(card) {
     const cardsToMatch = extractCardsToMatch(cardsFront, cardClass);    
 
     // the game does not flip a matched card
-    if(clickedCardBack.classList.contains('rotate') && !cardIsNotMatched(getFlippedCards(cardsFront), clickedCardFront)) {
+    if(clickedCardBack.classList.contains('rotate') && !cardIsNotMatched(getFlippedCards(cardsFront,cardsBack)[0], clickedCardFront)) {
         return;
     }
     
@@ -53,13 +53,14 @@ function testCard(card) {
 
     // checks if the card clicked is matched
     if(testForMatch(cardsToMatch)) {
-        numberOfPlays++;        
+        numberOfPlays++;              
         changeMatchedCardsColor(cardsFront);
     } else {
         flipBothCardsDisplayed(cardsFront, cardsBack);
     }
 
-    if(GameIsOver(cardsFront)) {
+    // checks if the game is over, if it is displays the 'numberOfPlays' played
+    if(gameIsOver(cardsFront)) {
         setTimeout(function() {
             alert(`Você ganhou em ${numberOfPlays} jogadas!`);       
         }, 500);
@@ -70,85 +71,78 @@ function testCard(card) {
 function changeMatchedCardsColor(cardsFrontDiv) {
     for(let cardCounter in cardsFrontDiv) {
         if(!cardsFrontDiv[cardCounter].classList.contains('rotate')) {
-            cardsFrontDiv[cardCounter].classList.add('cardMatched')
+            cardsFrontDiv[cardCounter].classList.add('cardMatched');
         }
     }
 }
 
 // checks if all cards were flipped
-function GameIsOver(cardsFront) {
+function gameIsOver(cardsFront) {
     if(numberOfCardsHidden(cardsFront) === 0) {
         return true;
     }
     return false;
 }
 
-// gets all the current flipped cards in game
-function getFlippedCards(allCardsFront){
-    const cardsFlipedFront = []
+// returns an matrix containing all the cards flipped front and back divs
+function getFlippedCards(allCardsFrontDiv, allCardsBackDiv){
+    // array containing all cards fliped front div
+    const cardsFlipedFrontDiv = [];
+    const cardsFlipedBackDiv = [];
     
-    for(let cardCounter in allCardsFront) {
-        if(!allCardsFront[cardCounter].classList.contains('rotate')) {
-            cardsFlipedFront.push(allCardsFront[cardCounter]);
+    for(let cardCounter in allCardsFrontDiv) {
+        if(!allCardsFrontDiv[cardCounter].classList.contains('rotate')) {
+            cardsFlipedFrontDiv.push(allCardsFrontDiv[cardCounter]);
+            cardsFlipedBackDiv.push(allCardsBackDiv[cardCounter]);
         }
     }    
-    return cardsFlipedFront;
+    return [cardsFlipedFrontDiv, cardsFlipedBackDiv];
 }
 
+// if the 2 cards selected were not matched, the game must flips both cards back
 function flipBothCardsDisplayed(allCardsFront, allCardsBack) {
-    const cardsFlipedFront = []
-    const cardsFlipedBack = []
+    // arrays containing all cards fliped front and back div
+    const cardsFlipedFront = getFlippedCards(allCardsFront, allCardsBack)[0];
+    const cardsFlipedBack = getFlippedCards(allCardsFront, allCardsBack)[1];
 
     let quantityOfCardsFliped = 0;
-    
-    for(let cardCounter in allCardsFront) {
-        if(!allCardsFront[cardCounter].classList.contains('rotate')) {
-            cardsFlipedFront.push(allCardsFront[cardCounter]);
-            cardsFlipedBack.push(allCardsBack[cardCounter]);
-        }
-    }    
 
-    // console.log(cardsFlipedFront);
-
-    setTimeout(function() {
+    setTimeout(() => {
         for(let cardCounter in cardsFlipedFront) {
-            if(cardIsNotMatched(cardsFlipedFront, cardsFlipedFront[cardCounter]) && !cardIsAlone(cardsFlipedFront, cardsFlipedFront[cardCounter])) {
+            if(cardIsNotMatched(cardsFlipedFront, cardsFlipedFront[cardCounter]) && !cardIsAlone(cardsFlipedFront)) {
                 flipCard(cardsFlipedFront[cardCounter], cardsFlipedBack[cardCounter]);
                 quantityOfCardsFliped++;
             }
         }  
+        // checks if the play was completed, so we can increment 'numberOfPlays'
+        if(quantityOfCardsFliped >= 2) {
+            numberOfPlays++;
+        }
     }, 600);
-
-
-    // checks if the play was completed, so we can increment 'numberOfPlays'
-    if(quantityOfCardsFliped >= 2) {
-        numberOfPlays++;
-    }
 }
 
+// checks if just 1 card was selected, so we can mantain it being displayed
 function cardIsAlone(cardsFliped) {
 
-    // regex user for extracting the gif name from the image file
-    const extractGifRegex = /images\/(.*).gif/;
-
-    let quantityOfAloneCardsFlipped = cardsFliped.length;    
+    // this variable will be decremented so we can disregard the cards that were already match
+    let quantityOfCardsFlipped = cardsFliped.length;    
 
    // variable containing the classe name of the card clicked
    const cardsToAnalyzeClasses = [];
 
    for(let cards in cardsFliped) {
-       cardsToAnalyzeClasses.push(extractGifRegex.exec(cardsFliped[cards].childNodes[1].src)[1]);
+       cardsToAnalyzeClasses.push(extractNameFromGifFile(cardsFliped[cards]));
    }
 
-   for(let i = 0; i < cardsToAnalyzeClasses.length; i++) {
-       for(let j = i + 1; j < cardsToAnalyzeClasses.length; j++) {
-           if(cardsToAnalyzeClasses[i] === cardsToAnalyzeClasses[j]) {
-            quantityOfAloneCardsFlipped -= 2;
+   for(let currentCard = 0; currentCard < cardsToAnalyzeClasses.length; currentCard++) {
+       for(let nextCard = currentCard + 1; nextCard < cardsToAnalyzeClasses.length; nextCard++) {
+           if(cardsToAnalyzeClasses[currentCard] === cardsToAnalyzeClasses[nextCard]) {
+            quantityOfCardsFlipped -= 2;
            }
        }
    }
 
-   return (quantityOfAloneCardsFlipped === 1);
+   return (quantityOfCardsFlipped === 1);
 }
 
 function cardIsNotMatched(cardsFliped, cardToAnalyse) {
