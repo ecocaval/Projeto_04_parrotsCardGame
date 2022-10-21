@@ -41,7 +41,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100px;
+    height: 70px;
     width: 200px;
     font-size: 30px;
     color: #FFFFFF;
@@ -113,6 +113,7 @@ main {
     width: 170px;
     height: 70px;
     margin-top: 50px;
+    margin-bottom: 50px;
     border-radius: 15px;
     transition: all .5s;
     background-color: var(--restartButtonBackgroundColor);
@@ -124,8 +125,16 @@ main {
     background-color: var(--restartButtonHoverBackgroundColor);
 }
 
+@media(max-width: 1100px) {
+    .gameClock {
+        display: none;
+    }
+}
+
 @media(max-width: 500px) {
     header {
         margin: 20px 15px;
     }
 }
+
+
