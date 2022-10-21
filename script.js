@@ -6,8 +6,10 @@
 // total number of plays, will be incremented and displayed at the game's end
 let numberOfPlays = 0;
 
-// timer 
+// timer variables BE CAREFUL
 let secondsIncrementer = 0;
+let milisecondsIncrementer = 0;
+let seconds = 1;
 let milliseconds = 0;
 
 // asks the quantity of cards to be displayed, so we can start the game
@@ -65,42 +67,39 @@ function createGameCards(cardQuantity) {
 }
 
 function createGameClock() {
-    const header = document.querySelector('header');
-
-    let seconds = 1;
-    let milliseconds = 0;
+    const gameClock = document.querySelector('.gameClock');
 
     seconds = fomartNumberTo2digits(seconds);
     milliseconds = fomartNumberTo2digits(milliseconds);
 
-    header.innerHTML += `
-        <div class="gameClock">
-            <p class="seconds">00</p>
-            <p>:</p>
-            <p class="milliseconds">00</p>
-        </div>    
-    `;
-
-    secondsIncrementer = setInterval(() => {
-        secondsHTML = document.querySelector('.seconds');
-        secondsHTML.innerHTML = seconds;
-        seconds++;
-        seconds = fomartNumberTo2digits(seconds);
-        if(seconds === 60) {
-            seconds = 0
-        }
-    }, 1000);
-
-    minutesIncrementer = setInterval(() => {
-        const millisecondsHTML = document.querySelector('.milliseconds');
-        millisecondsHTML.innerHTML = milliseconds;
-        milliseconds++;
-        milliseconds = fomartNumberTo2digits(milliseconds);
-        if(milliseconds >= 99) {
-            milliseconds = 0
+    gameClock.innerHTML = `
+        <p class="seconds">00</p>
+        <p>:</p>
+        <p class="milliseconds">00</p>        
+    `;  
+    
+    if(gameClock !== null) {
+        secondsIncrementer = setInterval(() => {
+            const secondsDiv = document.querySelector('.seconds');
+            secondsDiv.innerHTML = seconds;
+            seconds++;
+            seconds = fomartNumberTo2digits(seconds);
+            if(seconds === 60) {
+                seconds = 0
+            }
+        }, 1000);
+    
+        milisecondsIncrementer = setInterval(() => {
+            const millisecondsDiv = document.querySelector('.milliseconds');
+            millisecondsDiv.innerHTML = milliseconds;
+            milliseconds++;
             milliseconds = fomartNumberTo2digits(milliseconds);
-        }
-    }, 10);
+            if(milliseconds >= 99) {
+                milliseconds = 0
+                milliseconds = fomartNumberTo2digits(milliseconds);
+            }
+        }, 10);
+    }
 }
 
 function fomartNumberTo2digits(number) {
@@ -198,6 +197,11 @@ function testCard(card) {
 
     // checks if the game is over, if it is displays the 'numberOfPlays' played
     if(gameIsOver(cardsFront)) {
+        
+        // stops game timer 
+        stopClock();
+
+        // waits .5s before alerting the game win
         setTimeout(function() {
             alert(`Você ganhou em ${numberOfPlays} jogadas!`);   
             restartMatchAtEnd();    
@@ -383,6 +387,13 @@ function gameIsOver(cardsFront) {
         return true;
     }
     return false;
+}
+
+function stopClock() {
+    clearInterval(secondsIncrementer);
+    clearInterval(milisecondsIncrementer);
+    seconds = 0;
+    milliseconds = 0;
 }
 
 function restartMatchAtEnd() {
