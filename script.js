@@ -6,6 +6,10 @@
 // total number of plays, will be incremented and displayed at the game's end
 let numberOfPlays = 0;
 
+// timer 
+let secondsIncrementer = 0;
+let milliseconds = 0;
+
 // asks the quantity of cards to be displayed, so we can start the game
 askCardQuantity();
 
@@ -18,6 +22,7 @@ function askCardQuantity() {
         cardQuantity = prompt('Por favor, insira o número de cartas que deseja:');
     }
     createGameCards(cardQuantity);
+    createGameClock();
 }
 
 // adds the cards in the HTML, the number of cards added is the 'cardQuantity'
@@ -57,6 +62,52 @@ function createGameCards(cardQuantity) {
         </div>
         `;
     }
+}
+
+function createGameClock() {
+    const header = document.querySelector('header');
+
+    let seconds = 1;
+    let milliseconds = 0;
+
+    seconds = fomartNumberTo2digits(seconds);
+    milliseconds = fomartNumberTo2digits(milliseconds);
+
+    header.innerHTML += `
+        <div class="gameClock">
+            <p class="seconds">00</p>
+            <p>:</p>
+            <p class="milliseconds">00</p>
+        </div>    
+    `;
+
+    secondsIncrementer = setInterval(() => {
+        secondsHTML = document.querySelector('.seconds');
+        secondsHTML.innerHTML = seconds;
+        seconds++;
+        seconds = fomartNumberTo2digits(seconds);
+        if(seconds === 60) {
+            seconds = 0
+        }
+    }, 1000);
+
+    minutesIncrementer = setInterval(() => {
+        const millisecondsHTML = document.querySelector('.milliseconds');
+        millisecondsHTML.innerHTML = milliseconds;
+        milliseconds++;
+        milliseconds = fomartNumberTo2digits(milliseconds);
+        if(milliseconds >= 99) {
+            milliseconds = 0
+            milliseconds = fomartNumberTo2digits(milliseconds);
+        }
+    }, 10);
+}
+
+function fomartNumberTo2digits(number) {
+    number = number.toLocaleString('pt-br', {
+        minimumIntegerDigits: 2,
+      });
+    return number;
 }
 
 function shuffleCards(cardClassesToShuffle) {

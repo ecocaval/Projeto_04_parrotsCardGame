@@ -33,6 +33,21 @@ header {
     font-size: 56px;
 }
 
+.gameClock {
+    font-family: 'Roboto';
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    width: 200px;
+    font-size: 30px;
+    color: #FFFFFF;
+    background-color: #000000;
+}
+
 main {
     width: 90%;
     margin: 0px auto;
