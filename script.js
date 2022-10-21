@@ -392,8 +392,10 @@ function gameIsOver(cardsFront) {
 function stopClock() {
     clearInterval(secondsIncrementer);
     clearInterval(milisecondsIncrementer);
-    seconds = 0;
+    seconds = 1;
+    seconds = fomartNumberTo2digits(seconds);
     milliseconds = 0;
+    milliseconds = fomartNumberTo2digits(milliseconds);
 }
 
 function restartMatchAtEnd() {
