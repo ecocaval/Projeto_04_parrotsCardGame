@@ -417,19 +417,23 @@ function restartMatchAtEnd() {
 
     let userAnswer = prompt('Você gostaria de reiniciar o jogo? (sim/não)')
 
-    // gets the user answer and dinsconsiders UpperCases and Accents 
-    userAnswer = userAnswer.toLowerCase();
-    userAnswer = userAnswer.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-    if(userAnswer === 'sim') {
-        deleteCards();
-        askCardQuantity();
-    } else if (userAnswer === 'nao') {
-        alert("Tudo bem! Caso mude de ideia, aperte botão 'RESTART GAME' !");
-        createRestartButton();
-    }  else {
-        // keeps asking until the userAnswer respects the answer rules
+    if(userAnswer === null) {
         restartMatchAtEnd();
+    } else {
+        // gets the user answer and dinsconsiders UpperCases and Accents 
+        userAnswer = userAnswer.toLowerCase();
+        userAnswer = userAnswer.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    
+        if(userAnswer === 'sim') {
+            deleteCards();
+            askCardQuantity();
+        } else if (userAnswer === 'nao') {
+            alert("Tudo bem! Caso mude de ideia, aperte botão 'RESTART GAME' !");
+            createRestartButton();
+        }  else {
+            // keeps asking until the userAnswer respects the answer rules
+            restartMatchAtEnd();
+        }
     }
 }
 
