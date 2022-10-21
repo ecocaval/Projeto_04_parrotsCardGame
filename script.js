@@ -66,12 +66,15 @@ function createGameCards(cardQuantity) {
     }
 }
 
+// creates clock used in game, clock is restarted at every new match
 function createGameClock() {
     const gameClock = document.querySelector('.gameClock');
 
+    // formats the number to 2 digits, so we can display 0 like 00, for example
     seconds = fomartNumberTo2digits(seconds);
     milliseconds = fomartNumberTo2digits(milliseconds);
 
+    // inserts '00:00' as initial value
     gameClock.innerHTML = `
         <p class="seconds">00</p>
         <p>:</p>
@@ -79,6 +82,7 @@ function createGameClock() {
     `;  
     
     if(gameClock !== null) {
+        // sets seconds inverval to increment, so 1000ms
         secondsIncrementer = setInterval(() => {
             const secondsDiv = document.querySelector('.seconds');
             secondsDiv.innerHTML = seconds;
@@ -89,6 +93,7 @@ function createGameClock() {
             }
         }, 1000);
     
+        // sets 'miliseconds' (actually is 10ms) interval to increment, in this case is 10ms
         milisecondsIncrementer = setInterval(() => {
             const millisecondsDiv = document.querySelector('.milliseconds');
             millisecondsDiv.innerHTML = milliseconds;
@@ -102,6 +107,7 @@ function createGameClock() {
     }
 }
 
+// formats the number to 2 digits, so we can display 0 like 00, for example
 function fomartNumberTo2digits(number) {
     number = number.toLocaleString('pt-br', {
         minimumIntegerDigits: 2,
@@ -236,6 +242,7 @@ function extractCardsToMatch(allCardsFrontDiv, classToMatch) {
     return cardsToMatch;
 }
 
+// analyses if the card is already in match, comparing it's class to all the matched cards classes
 function cardIsMatched(cardsFlipedFrontDiv, cardToAnalyse) {
 
     // variable containing the classe name of the card clicked
@@ -247,6 +254,7 @@ function cardIsMatched(cardsFlipedFrontDiv, cardToAnalyse) {
         cardsToAnalyzeClasses.push(extractNameFromGifFile(cardsFlipedFrontDiv[cards]));
     }
 
+    // checks if there is 2 cards with the same class in the array
     for(let currentCard = 0; currentCard < cardsToAnalyzeClasses.length; currentCard++) {
         for(let nextCard = currentCard + 1; nextCard < cardsToAnalyzeClasses.length; nextCard++) {
             if(cardsToAnalyzeClasses[currentCard] === cardsToAnalyzeClasses[nextCard]) {
@@ -276,6 +284,7 @@ function getFlippedCards(allCardsFrontDiv, allCardsBackDiv){
     return [cardsFlipedFrontDiv, cardsFlipedBackDiv];
 }
 
+// checks if there is 2 cards being tested, not allowing the user to flip a third one
 function noCardsBeingTested(allCardsFrontDiv, allCardsBackDiv) {
 
     const cardsFlipedFrontDiv = getFlippedCards(allCardsFrontDiv, allCardsBackDiv)[0];
@@ -289,6 +298,7 @@ function noCardsBeingTested(allCardsFrontDiv, allCardsBackDiv) {
         cardsToAnalyzeClasses.push(extractNameFromGifFile(cardsFlipedFrontDiv[cards]));
     }
 
+    // disconsiders cards that are already in match
     for(let currentCard = 0; currentCard < cardsToAnalyzeClasses.length; currentCard++) {
         for(let nextCard = currentCard + 1; nextCard < cardsToAnalyzeClasses.length; nextCard++) {
             if(cardsToAnalyzeClasses[currentCard] === cardsToAnalyzeClasses[nextCard]) {
@@ -392,8 +402,12 @@ function gameIsOver(cardsFront) {
 function stopClock() {
     clearInterval(secondsIncrementer);
     clearInterval(milisecondsIncrementer);
+
+    // resets seconds
     seconds = 1;
     seconds = fomartNumberTo2digits(seconds);
+
+    // resets miliseconds
     milliseconds = 0;
     milliseconds = fomartNumberTo2digits(milliseconds);
 }
@@ -412,7 +426,7 @@ function restartMatchAtEnd() {
         askCardQuantity();
     } else if (userAnswer === 'nao') {
         alert("Tudo bem! Caso mude de ideia, aperte botão 'RESTART GAME' !");
-        displayRestartButton();
+        createRestartButton();
     }  else {
         // keeps asking until the userAnswer respects the answer rules
         restartMatchAtEnd();
@@ -425,19 +439,22 @@ function deleteCards() {
     cardSection.innerHTML = null;
 }
 
-function displayRestartButton() {
+// creates an auxliary restart button if user chooses not to restart at restartMatchAtEnd prompt
+function createRestartButton() {
     const main_section = document.querySelector('main');
     main_section.innerHTML += `
         <div class="restartButton" onclick="restartMatchAtButton()">Restart Game</div>
     `;
 }
 
+// game restart behavior if user chooses to restart through the button, not the prompt
 function restartMatchAtButton() {
     deleteCards();
     deleteRestartButton()
     askCardQuantity();
 }
 
+// deletes auxiliary restart button if the game was restarted
 function deleteRestartButton() {
     const restartButton = document.querySelector('.restartButton');
     restartButton.remove();
