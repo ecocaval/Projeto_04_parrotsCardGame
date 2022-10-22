@@ -428,7 +428,7 @@ function restartMatchAtEnd() {
             deleteCards();
             askCardQuantity();
         } else if (userAnswer === 'nao') {
-            alert("Tudo bem! Caso mude de ideia, aperte botão 'RESTART GAME' !");
+            alert("Tudo bem! Caso mude de ideia, aperte o botão 'RESTART GAME' !");
             createRestartButton();
         }  else {
             // keeps asking until the userAnswer respects the answer rules

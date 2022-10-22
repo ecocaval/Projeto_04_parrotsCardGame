@@ -18,6 +18,13 @@
     /* Restart Button variables*/
     --restartButtonBackgroundColor: #75B79E;
     --restartButtonHoverBackgroundColor: #326a55;
+
+    /* Timer variables */
+    --timerBackgroundColor: #75B79E;
+}
+
+*{
+    box-sizing: border-box;
 }
 
 body {
@@ -36,8 +43,8 @@ header {
 .gameClock {
     font-family: 'Roboto';
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 15px;
+    right: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,7 +52,8 @@ header {
     width: 200px;
     font-size: 30px;
     color: #FFFFFF;
-    background-color: #000000;
+    background-color: var(--timerBackgroundColor);
+    border-radius: 10px;
 }
 
 main {
