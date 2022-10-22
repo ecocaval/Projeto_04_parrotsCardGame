@@ -1,12 +1,12 @@
 /**
  * @brief Parrot Game - Érico A. B. Cavalcanti - 17/10/22
- *        Driven Turma 9 - Third week of full-stack course
+ *        Driven Turma 9 - Fourth week of the full-stack course
 */ 
 
 // total number of plays, will be incremented and displayed at the game's end
 let numberOfPlays = 0;
 
-// timer variables BE CAREFUL
+// timer variables
 let secondsIncrementer = 0;
 let milisecondsIncrementer = 0;
 let seconds = 1;
