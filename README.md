@@ -1,4 +1,4 @@
-# <p align = "center">Web Mobile DrivenEats</p>
+# <p align = "center">Web Parrot Card Game</p>
 
 <p align = "center"><img style="width:700px" src="images/readMePic.PNG"/></p>
 
